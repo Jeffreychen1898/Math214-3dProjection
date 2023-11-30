@@ -1,5 +1,7 @@
 #pragma once
 
+#include "linalg.hpp"
+
 struct Pixel
 {
 	int red;
@@ -12,11 +14,11 @@ struct Image
 	int width;
 	int height;
 
-	char r*;
-	char g*;
-	char b*;
+	char* r;
+	char* g;
+	char* b;
 
-	float depth*;
+	float* depth;
 };
 
 Image* createImage(int _width, int _height);

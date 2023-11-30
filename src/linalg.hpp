@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 class Vec4
 {
 	public:
@@ -14,6 +16,8 @@ class Vec4
 		Vec4 operator-(Vec4& _other) const;
 		Vec4 operator*(float _scalar) const;
 		Vec4 operator/(float _scalar) const;
+
+		void print();
 };
 
 class Vec3
@@ -27,12 +31,14 @@ class Vec3
 
 		Vec3 operator+(const Vec3& _other) const;
 		Vec3 operator-(const Vec3& _other) const;
-		Vec4 operator*(float _scalar) const;
-		Vec4 operator/(float _scalar) const;
+		Vec3 operator*(float _scalar) const;
+		Vec3 operator/(float _scalar) const;
 		
-		Vec3 dot(const Vec3& _other) const;
+		float dot(const Vec3& _other) const;
 		Vec3 cross(const Vec3& _other) const;
-}
+		
+		void print();
+};
 
 class Vec2
 {
@@ -46,6 +52,8 @@ class Vec2
 		Vec2 operator-(Vec2& _other) const;
 		Vec2 operator*(float _scalar) const;
 		Vec2 operator/(float _scalar) const;
+
+		void print();
 };
 
 class Mat4
@@ -59,12 +67,15 @@ class Mat4
 			float i, float j, float k, float l,
 			float m, float n, float o, float p
 		);
+		Mat4(float _arr[]);
 		
-		float at(int _row, int _col);
+		float at(int _row, int _col) const;
 		void set(int _row, int _col, float _val);
 
 		Mat4 operator*(const Mat4& _other) const;
 		Vec4 operator*(const Vec4& _other) const;
+
+		void print();
 };
 
 class Mat2
@@ -76,12 +87,15 @@ class Mat2
 			float a, float b,
 			float c, float d
 		);
+		Mat2(float _arr[]);
 
-		float at(int _row, int _col);
+		float at(int _row, int _col) const;
 		void set(int _row, int _col, float _val);
 
 		Mat2 operator*(const Mat2& _other) const;
 		Vec2 operator*(const Vec2& _other) const;
 
 		void inverse();
+
+		void print();
 };

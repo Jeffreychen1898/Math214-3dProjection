@@ -1,15 +1,18 @@
-#include "image.h"
+#include "image.hpp"
 
 Image* createImage(int _width, int _height)
 {
+	return nullptr;
 }
 
 Image* deleteImage(Image* _img)
 {
+	return nullptr;
 }
 
 Pixel getPixel(const Image* _img, int _row, int _col)
 {
+	return { 0, 0, 0 };
 }
 
 void setPixel(Image* _img, int _row, int _col, Pixel _px)
