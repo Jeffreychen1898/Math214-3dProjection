@@ -131,8 +131,8 @@ void renderTriangle(Image* _img, const Triangle& _triangle)
 			Vec4 calculated_color = calculatePixel(_img, berycentric_coord, _triangle);
 
 			// out of near far plane
-			/*if(calculated_color.w < -1 || calculated_color.w > 1)
-				continue;*/
+			if(calculated_color.w < -1 || calculated_color.w > 1)
+				continue;
 			// obstructed by another object (equivalent to GL_LEQUAL in opengl)
 			if(calculated_color.w > _img->depth[i * _img->width + j])
 				continue;
@@ -215,7 +215,8 @@ static bool getBoundingRectangle(Image* _img, Vec2& _boxMin, Vec2& _boxMax,
 	up = 1.f - up;
 	down = 1.f - down;
 
-	if(left < 0 || right > 1 || up < 0 || down > 1)
+	// not in view
+	if(right < 0 || left > 1 || down < 0 || up > 1)
 		return false;
 
 	// set the bounding box coordinates to range x: [0, width], y: [0: height]

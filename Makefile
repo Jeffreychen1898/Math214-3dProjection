@@ -1,7 +1,7 @@
 PROJ := projection
 
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Werror
+CXXFLAGS := -std=c++17 -Wall
 
 SRC_FILES := $(shell find ./src -name "*.cpp")
 OBJ_FILES := $(SRC_FILES:./src/%.cpp=./obj/%.o)

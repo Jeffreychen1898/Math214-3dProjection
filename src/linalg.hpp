@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 
 class Vec4
 {
@@ -18,7 +19,9 @@ class Vec4
 		Vec4 operator*(float _scalar) const;
 		Vec4 operator/(float _scalar) const;
 
-		void print();
+		void print() const;
+		void normalize();
+		float length();
 };
 
 class Vec3
@@ -38,7 +41,9 @@ class Vec3
 		float dot(const Vec3& _other) const;
 		Vec3 cross(const Vec3& _other) const;
 		
-		void print();
+		void print() const;
+		void normalize();
+		float length();
 };
 
 class Vec2
@@ -54,7 +59,9 @@ class Vec2
 		Vec2 operator*(float _scalar) const;
 		Vec2 operator/(float _scalar) const;
 
-		void print();
+		void print() const;
+		void normalize();
+		float length();
 };
 
 class Mat4
@@ -76,7 +83,7 @@ class Mat4
 		Mat4 operator*(const Mat4& _other) const;
 		Vec4 operator*(const Vec4& _other) const;
 
-		void print();
+		void print() const;
 };
 
 class Mat2
@@ -98,5 +105,5 @@ class Mat2
 
 		void inverse();
 
-		void print();
+		void print() const;
 };

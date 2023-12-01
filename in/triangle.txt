@@ -1,0 +1,8 @@
+# create a simple triangle to test the projection
+
+v1:  0    20  -100, 255 255 0
+v2:  20  -20  -50 , 255 0   0
+v3: -20  -20  -50 , 0   255 0
+
+t: v1 v2 v3
+

@@ -32,9 +32,23 @@ Vec4 Vec4::operator/(float _scalar) const
 	return Vec4(x / _scalar, y / _scalar, z / _scalar, w / _scalar);
 }
 
-void Vec4::print()
+void Vec4::print() const
 {
 	std::cout << "( " << x << " : " << y << " : " << z << " : " << w << " )" << std::endl;
+}
+
+float Vec4::length()
+{
+	return std::sqrt(x * x + y * y + z * z + w * w);
+}
+
+void Vec4::normalize()
+{
+	float get_length = length();
+	x /= get_length;
+	y /= get_length;
+	z /= get_length;
+	w /= get_length;
 }
 
 // vec3 implementations
@@ -75,9 +89,22 @@ Vec3 Vec3::cross(const Vec3& _other) const
 	return Vec3(x_component, -y_component, z_component);
 }
 
-void Vec3::print()
+void Vec3::print() const
 {
 	std::cout << "( " << x << " : " << y << " : " << z << " )" << std::endl;
+}
+
+float Vec3::length()
+{
+	return std::sqrt(x * x + y * y + z * z);
+}
+
+void Vec3::normalize()
+{
+	float get_length = length();
+	x /= get_length;
+	y /= get_length;
+	z /= get_length;
 }
 
 // vec2 implementations
@@ -105,9 +132,21 @@ Vec2 Vec2::operator/(float _scalar) const
 	return Vec2(x / _scalar, y / _scalar);
 }
 
-void Vec2::print()
+void Vec2::print() const
 {
 	std::cout << "( " << x << " : " << y << " )" << std::endl;
+}
+
+float Vec2::length()
+{
+	return std::sqrt(x * x + y * y);
+}
+
+void Vec2::normalize()
+{
+	float get_length = length();
+	x /= get_length;
+	y /= get_length;
 }
 
 // mat4 implementations
@@ -187,7 +226,7 @@ Vec4 Mat4::operator*(const Vec4& _other) const
     return Vec4(result[0], result[1], result[2], result[3]);
 }
 
-void Mat4::print()
+void Mat4::print() const
 {
 	std::cout << "[" << std::endl;
 	for(int i=0;i<4;++i)
@@ -273,7 +312,7 @@ void Mat2::inverse()
     set(1, 1, a * det);
 }
 
-void Mat2::print()
+void Mat2::print() const
 {
 	std::cout << "[" << std::endl;
 	for(int i=0;i<2;++i)
