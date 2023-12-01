@@ -33,7 +33,7 @@ void deleteImage(Image* _img)
 
 void clearImage(Image* _img, Pixel _color)
 {
-	float furthest_depth = -1; // depth vals should be between -1 and 1
+	float furthest_depth = 1; // depth vals should be between -1 and 1
 	for(int i=0;i<_img->height;++i)
 	{
 		for(int j=0;j<_img->width;++j)
@@ -129,6 +129,14 @@ void renderTriangle(Image* _img, const Triangle& _triangle)
 				continue;
 
 			Vec4 calculated_color = calculatePixel(_img, berycentric_coord, _triangle);
+
+			// out of near far plane
+			/*if(calculated_color.w < -1 || calculated_color.w > 1)
+				continue;*/
+			// obstructed by another object (equivalent to GL_LEQUAL in opengl)
+			if(calculated_color.w > _img->depth[i * _img->width + j])
+				continue;
+			// set pixel
 			Pixel color = {
 				static_cast<unsigned char>(calculated_color.x),
 				static_cast<unsigned char>(calculated_color.y),
@@ -148,11 +156,7 @@ static Vec4 calculatePixel(Image* _img, const Vec2& _beryCoord, const Triangle& 
 	float weights[] = {1.f - _beryCoord.x - _beryCoord.y, _beryCoord.x, _beryCoord.y};
 
 	// perspective divide
-	float triangle_z[] = {
-		_triangle.vertex1.z / _triangle.vertex1.w,
-		_triangle.vertex2.z / _triangle.vertex2.w,
-		_triangle.vertex3.z / _triangle.vertex3.w
-	};
+	float triangle_z[] = { _triangle.vertex1.w, _triangle.vertex2.w, _triangle.vertex3.w };
 
 	// perspective correct interpolation
 	// just a quick project, don't really care about divide by 0 here
@@ -185,11 +189,11 @@ static Vec4 calculatePixel(Image* _img, const Vec2& _beryCoord, const Triangle& 
 	);
 	Vec4 interpolated_color = (v1_color * weights[0]) + (v2_color * weights[1]) + (v3_color * weights[2]);
 
-	// interpolate z (got this equation from chat gpt)
-	float interpolate_z = 1.f / (
-			weights[0] * (1.f / triangle_z[0]) +
-			weights[1] * (1.f / triangle_z[1]) +
-			weights[2] * (1.f / triangle_z[2])
+	// interpolate z
+	float interpolate_z = (
+			weights[0] * (_triangle.vertex1.z / _triangle.vertex1.w) +
+			weights[1] * (_triangle.vertex2.z / _triangle.vertex2.w) +
+			weights[2] * (_triangle.vertex3.z / _triangle.vertex3.w)
 	);
 	interpolated_color.w = interpolate_z;
 	return interpolated_color;
