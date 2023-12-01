@@ -24,10 +24,11 @@ all: $(PROJ)
 
 .PHONY: clean
 clean:
-	rm -rf obj $(PROJ)
+	rm -rf obj out $(PROJ)
 
 .PHONY: run
 run: $(PROJ)
+	mkdir -p out
 	./$(PROJ)
 
 

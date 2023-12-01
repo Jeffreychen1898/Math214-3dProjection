@@ -1,5 +1,8 @@
 #pragma once
 
+#include <fstream>
+#include <algorithm>
+
 #include "linalg.hpp"
 
 struct Pixel
@@ -7,6 +10,7 @@ struct Pixel
 	int red;
 	int green;
 	int blue;
+	float depth;
 };
 
 struct Image
@@ -14,15 +18,16 @@ struct Image
 	int width;
 	int height;
 
-	char* r;
-	char* g;
-	char* b;
+	unsigned char* r;
+	unsigned char* g;
+	unsigned char* b;
 
 	float* depth;
 };
 
 Image* createImage(int _width, int _height);
-Image* deleteImage(Image* _img);
+void deleteImage(Image* _img);
+void clearImage(Image* _img, Pixel _color);
 Pixel getPixel(const Image* _img, int _row, int _col);
 void setPixel(Image* _img, int _row, int _col, Pixel _px);
 void exportImage(const char* _path, const Image* _img);
