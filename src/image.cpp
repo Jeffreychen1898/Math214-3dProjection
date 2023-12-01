@@ -2,6 +2,8 @@
 
 static bool getBoundingRectangle(Image* _img, Vec2& _boxMin, Vec2& _boxMax,
 		const Vec4& _v1, const Vec4& _v2, const Vec4& _v3);
+// output is x->red y->green z->blue w->depth
+static Vec4 calculatePixel(Image* _img, const Vec2& _beryCoord, const Triangle& _triangle);
 
 Image* createImage(int _width, int _height)
 {
@@ -47,9 +49,8 @@ Pixel getPixel(const Image* _img, int _row, int _col)
 	int red_color = static_cast<int>(_img->r[_row * _img->width + _col]);
 	int green_color = static_cast<int>(_img->g[_row * _img->width + _col]);
 	int blue_color = static_cast<int>(_img->b[_row * _img->width + _col]);
-	float depth = _img->depth[_row * _img->width + _col];
 
-	return { red_color, green_color, blue_color, depth };
+	return { red_color, green_color, blue_color };
 }
 
 void setPixel(Image* _img, int _row, int _col, Pixel _px)
@@ -61,7 +62,6 @@ void setPixel(Image* _img, int _row, int _col, Pixel _px)
 	_img->r[_row * _img->width + _col] = red_color;
 	_img->g[_row * _img->width + _col] = green_color;
 	_img->b[_row * _img->width + _col] = blue_color;
-	_img->depth[_row * _img->width + _col] = _px.depth;
 }
 
 void exportImage(const char* _path, const Image* _img)
@@ -88,24 +88,24 @@ void exportImage(const char* _path, const Image* _img)
 	file.close();
 }
 
-void renderTriangle(Image* _img, Vec4 _v1, Vec4 _v2, Vec4 _v3, Pixel _color)
+void renderTriangle(Image* _img, const Triangle& _triangle)
 {
 	// perform the perspective divide
-	_v1 = _v1 / _v1.w;
-	_v2 = _v2 / _v2.w;
-	_v3 = _v3 / _v3.w;
+	Vec4 v1 = _triangle.vertex1 / _triangle.vertex1.w;
+	Vec4 v2 = _triangle.vertex2 / _triangle.vertex2.w;
+	Vec4 v3 = _triangle.vertex3 / _triangle.vertex3.w;
 
 	// calculate the rectangle around the triangle
 	Vec2 bounding_box_min(0.f, 0.f);
 	Vec2 bounding_box_max(0.f, 0.f);
-	if(!getBoundingRectangle(_img, bounding_box_min, bounding_box_max, _v1, _v2, _v3))
+	if(!getBoundingRectangle(_img, bounding_box_min, bounding_box_max, v1, v2, v3))
 		return;
 
-	// calculate the matrix to convert to berycentric coordinates
-	Vec2 v1_as_vec2(_v1.x, _v1.y);
+	// calculate the matrix to convert to berycentric coordinates (just a change in basis matrix)
+	Vec2 v1_as_vec2(v1.x, v1.y);
 
-	Vec4 v1_to_v2 = _v2 - _v1;
-	Vec4 v1_to_v3 = _v3 - _v1;
+	Vec4 v1_to_v2 = v2 - v1;
+	Vec4 v1_to_v3 = v3 - v1;
 	Mat2 berycentric_coord_mat(
 			v1_to_v2.x, v1_to_v3.x,
 			v1_to_v2.y, v1_to_v3.y
@@ -121,19 +121,80 @@ void renderTriangle(Image* _img, Vec4 _v1, Vec4 _v2, Vec4 _v3, Pixel _color)
 					  j / (_img->width / 2.f) - 1.f ,
 					-(i / (_img->height / 2.f) - 1.f)
 			);
-			//current_point.print();
 			Vec2 minus_v1 = current_point - v1_as_vec2;
 			Vec2 berycentric_coord = berycentric_coord_mat * minus_v1;
 
 			if(berycentric_coord.x < 0 || berycentric_coord.y < 0 ||
 			   berycentric_coord.x + berycentric_coord.y > 1)
 				continue;
-			setPixel(_img, i, j, _color);
+
+			Vec4 calculated_color = calculatePixel(_img, berycentric_coord, _triangle);
+			Pixel color = {
+				static_cast<unsigned char>(calculated_color.x),
+				static_cast<unsigned char>(calculated_color.y),
+				static_cast<unsigned char>(calculated_color.z)
+			};
+			setPixel(_img, i, j, color);
+			_img->depth[i * _img->width + j] = calculated_color.w;
 		}
 	}
 }
 
 // static functions
+static Vec4 calculatePixel(Image* _img, const Vec2& _beryCoord, const Triangle& _triangle)
+{
+	// weights are just the berycentric coordinates
+	// that's why we calculate them in the first place :P
+	float weights[] = {1.f - _beryCoord.x - _beryCoord.y, _beryCoord.x, _beryCoord.y};
+
+	// perspective divide
+	float triangle_z[] = {
+		_triangle.vertex1.z / _triangle.vertex1.w,
+		_triangle.vertex2.z / _triangle.vertex2.w,
+		_triangle.vertex3.z / _triangle.vertex3.w
+	};
+
+	// perspective correct interpolation
+	// just a quick project, don't really care about divide by 0 here
+	float weight_sum = 0;
+	for(int i=0;i<3;++i)
+	{
+		weights[i] /= triangle_z[i];
+		weight_sum += weights[i];
+	}
+	// make sure weights sum to 1
+	for(int i=0;i<3;++i) weights[i] /= weight_sum;
+
+	Vec4 v1_color(
+			static_cast<float>(_triangle.vertexColor1.red),
+			static_cast<float>(_triangle.vertexColor1.green),
+			static_cast<float>(_triangle.vertexColor1.blue),
+			0.f
+	);
+	Vec4 v2_color(
+			static_cast<float>(_triangle.vertexColor2.red),
+			static_cast<float>(_triangle.vertexColor2.green),
+			static_cast<float>(_triangle.vertexColor2.blue),
+			0.f
+	);
+	Vec4 v3_color(
+			static_cast<float>(_triangle.vertexColor3.red),
+			static_cast<float>(_triangle.vertexColor3.green),
+			static_cast<float>(_triangle.vertexColor3.blue),
+			0.f
+	);
+	Vec4 interpolated_color = (v1_color * weights[0]) + (v2_color * weights[1]) + (v3_color * weights[2]);
+
+	// interpolate z (got this equation from chat gpt)
+	float interpolate_z = 1.f / (
+			weights[0] * (1.f / triangle_z[0]) +
+			weights[1] * (1.f / triangle_z[1]) +
+			weights[2] * (1.f / triangle_z[2])
+	);
+	interpolated_color.w = interpolate_z;
+	return interpolated_color;
+}
+
 static bool getBoundingRectangle(Image* _img, Vec2& _boxMin, Vec2& _boxMax,
 		const Vec4& _v1, const Vec4& _v2, const Vec4& _v3)
 {

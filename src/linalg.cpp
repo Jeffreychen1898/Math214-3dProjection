@@ -7,12 +7,17 @@ Vec4::Vec4(float _x, float _y, float _z, float _w)
 	: x(_x), y(_y), z(_z), w(_w)
 {}
 
-Vec4 Vec4::operator+(Vec4& _other) const
+Vec4 Vec4::operator=(Vec4 _other)
+{
+	return Vec4(_other.x, _other.y, _other.z, _other.w);
+}
+
+Vec4 Vec4::operator+(Vec4 _other) const
 {
 	return Vec4(x + _other.x, y + _other.y, z + _other.z, w + _other.w);
 }
 
-Vec4 Vec4::operator-(Vec4& _other) const
+Vec4 Vec4::operator-(Vec4 _other) const
 {
 	return Vec4(x - _other.x, y - _other.y, z - _other.z, w - _other.w);
 }
@@ -37,12 +42,12 @@ Vec3::Vec3(float _x, float _y, float _z)
 	: x(_x), y(_y), z(_z)
 {}
 
-Vec3 Vec3::operator+(const Vec3& _other) const
+Vec3 Vec3::operator+(const Vec3 _other) const
 {
 	return Vec3(x + _other.x, y + _other.y, z + _other.z);
 }
 
-Vec3 Vec3::operator-(const Vec3& _other) const
+Vec3 Vec3::operator-(const Vec3 _other) const
 {
 	return Vec3(x - _other.x, y - _other.y, z - _other.z);
 }
@@ -80,12 +85,12 @@ Vec2::Vec2(float _x, float _y)
 	: x(_x), y(_y)
 {}
 
-Vec2 Vec2::operator+(Vec2& _other) const
+Vec2 Vec2::operator+(Vec2 _other) const
 {
 	return Vec2(x + _other.x, y + _other.y);
 }
 
-Vec2 Vec2::operator-(Vec2& _other) const
+Vec2 Vec2::operator-(Vec2 _other) const
 {
 	return Vec2(x - _other.x, y - _other.y);
 }
