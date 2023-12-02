@@ -74,21 +74,21 @@ Mat4 calculateViewMatrix(Vec3 _position, Vec3 _lookat, Vec3 _up)
 	// however, u1 MUST be the forward vector because you
 	// do not want to change the forward vector.
 
-	Vec3 forward_vector = _position - _lookat;
+	Vec3 forward_vector = _lookat - _position;
 	// this program mimics OpenGL's API and opengl have +z pointing
 	// out of the screen not into the screen, so the left is actually
 	// the right
-	Vec3 right_vector = _up.cross(forward_vector);
-	Vec3 up_vector = forward_vector.cross(right_vector);
+	Vec3 right_vector = forward_vector.cross(_up);
+	Vec3 up_vector = right_vector.cross(forward_vector);
 	
 	forward_vector.normalize();
 	right_vector.normalize();
 	up_vector.normalize();
 
 	Mat4 change_in_basis(
-			right_vector.x  , right_vector.y  , right_vector.z  , right_vector.dot(_position),
-			up_vector.x     , up_vector.y     , up_vector.z     , up_vector.dot(_position),
-			forward_vector.x, forward_vector.y, forward_vector.z, -forward_vector.dot(_position),
+			right_vector.x  , right_vector.y  , right_vector.z  , -right_vector.dot(_position),
+			up_vector.x     , up_vector.y     , up_vector.z     , -up_vector.dot(_position),
+			-forward_vector.x, -forward_vector.y, -forward_vector.z, forward_vector.dot(_position),
 			0.f             , 0.f             , 0.f             , 1.f
 	);
 	
