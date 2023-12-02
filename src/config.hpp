@@ -1,6 +1,7 @@
 #pragma once
 
 #define HALF_PI 1.57079632679
+#define PI      3.14159265359
 
 #define SHAPE_PATH "in/triangle.txt"
 #define IMAGE_OUT_PATH "out/testing.ppm"
