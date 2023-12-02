@@ -1,0 +1,68 @@
+# create a pointy looking tower
+
+# bottom vertices
+
+b1:  -5 0  -5		118 255 24
+b2:  -5 0  5		255 227 24
+b3:   5 0  -5		46 255 223
+b4:   5 0   5		225 146 24
+
+# top vertices
+
+t1:  -5 10 -5		118 255 24
+t2:  -5 10  5		255 227 24
+t3:   5 10 -5		46 255 223
+t4:   5 10  5		225 146 24
+
+# top, out vertices
+
+to1: -7 10 -7		57 141 0
+to2: -7 10  7		0 139 118
+to3:  7 10 -7		234 206 0
+to4:  7 10  7		175 106 0
+
+# pointy top
+
+pointy: 0, 15, 0	255 255 255
+
+# bottom
+t: b1 b2 b4
+t: b1 b4 b3
+
+# left
+t: b1 t1 b2
+t: t1 t2 b2
+
+# right
+t: b3 t3 b4
+t: t3 t4 b4
+
+# front
+t: b2 t2 b4
+t: t2 t4 b4
+
+# back
+t: b1 t1 b3
+t: t1 t3 b3
+
+# right cover
+t: t1 to1 to2
+t: t1 to2 t2
+
+# left cover
+t: t3 to3 to4
+t: t3 to4 t4
+
+# back cover
+t: t1 to1 to3
+t: t1 to3 t3
+
+# front cover
+t: t2 to2 to4
+t: t2 to4 t4
+
+# tip
+t: to1 to2 pointy
+t: to2 to4 pointy
+t: to3 to4 pointy
+t: to1 to3 pointy

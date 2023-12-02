@@ -4,6 +4,7 @@ CXX := g++
 CXXFLAGS := -std=c++17 -Wall
 
 SRC_FILES := $(shell find ./src -name "*.cpp")
+HEADER_FILES := $(shell find ./src -name "*.hpp")
 OBJ_FILES := $(SRC_FILES:./src/%.cpp=./obj/%.o)
 
 # create the obj folder
@@ -12,7 +13,7 @@ create_obj_dir:
 	mkdir -p obj
 
 # compile the obj files
-$(OBJ_FILES): ./obj/%.o : ./src/%.cpp | create_obj_dir
+$(OBJ_FILES): ./obj/%.o : ./src/%.cpp $(HEADER_FILES) | create_obj_dir
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 # build the program
