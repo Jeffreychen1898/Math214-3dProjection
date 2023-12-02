@@ -2,6 +2,9 @@
 
 #define HALF_PI 1.57079632679
 
+#define SHAPE_PATH "in/triangle.txt"
+#define IMAGE_OUT_PATH "out/testing.ppm"
+
 #define IMAGE_WIDTH 800
 #define IMAGE_HEIGHT 600
 

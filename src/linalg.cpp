@@ -3,13 +3,22 @@
 #define LINALG_EPSILON 0.001
 
 // vec4 implementations
+Vec4::Vec4()
+	: x(0.f), y(0.f), z(0.f)
+{}
+
 Vec4::Vec4(float _x, float _y, float _z, float _w)
 	: x(_x), y(_y), z(_z), w(_w)
 {}
 
-Vec4 Vec4::operator=(Vec4 _other)
+Vec4& Vec4::operator=(const Vec4& _other)
 {
-	return Vec4(_other.x, _other.y, _other.z, _other.w);
+	x = _other.x;
+	y = _other.y;
+	z = _other.z;
+	w = _other.w;
+
+	return *this;
 }
 
 Vec4 Vec4::operator+(Vec4 _other) const
@@ -55,6 +64,15 @@ void Vec4::normalize()
 Vec3::Vec3(float _x, float _y, float _z)
 	: x(_x), y(_y), z(_z)
 {}
+
+Vec3& Vec3::operator=(const Vec3& _other)
+{
+	x = _other.x;
+	y = _other.y;
+	z = _other.z;
+
+	return *this;
+}
 
 Vec3 Vec3::operator+(const Vec3 _other) const
 {

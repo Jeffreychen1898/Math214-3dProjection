@@ -7,9 +7,9 @@
 
 struct Pixel
 {
-	int red;
-	int green;
-	int blue;
+	int red = 0;
+	int green = 0;
+	int blue = 0;
 };
 
 struct Image

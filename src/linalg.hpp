@@ -11,9 +11,10 @@ class Vec4
 		float z;
 		float w;
 
+		Vec4();
 		Vec4(float _x, float _y, float _z, float _w);
 
-		Vec4 operator=(Vec4 _other);
+		Vec4& operator=(const Vec4& _other);
 		Vec4 operator+(Vec4 _other) const;
 		Vec4 operator-(Vec4 _other) const;
 		Vec4 operator*(float _scalar) const;
@@ -33,6 +34,7 @@ class Vec3
 
 		Vec3(float _x, float _y, float _z);
 
+		Vec3& operator=(const Vec3& _other);
 		Vec3 operator+(const Vec3 _other) const;
 		Vec3 operator-(const Vec3 _other) const;
 		Vec3 operator*(float _scalar) const;

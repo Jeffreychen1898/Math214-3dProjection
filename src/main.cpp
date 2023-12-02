@@ -2,6 +2,7 @@
 #include <cmath>
 
 #include "config.hpp"
+#include "parser.hpp"
 #include "linalg.hpp"
 #include "image.hpp"
 
@@ -13,8 +14,14 @@ int main()
 	int image_width = IMAGE_WIDTH;
 	int image_height = IMAGE_HEIGHT;
 
-	Image* test_image = createImage(image_width, image_height);
-	clearImage(test_image, {0, 0, 0});
+	Image* out_image = createImage(image_width, image_height);
+	clearImage(out_image, {0, 0, 0});
+
+	// load the shape
+	Shapes* new_shapes = loadShapes(SHAPE_PATH);
+	int triangle_count = getShapeTriangleCount(new_shapes);
+	Triangle shape_triangles[triangle_count];
+	getShapeTriangles(new_shapes, shape_triangles);
 
 	// create the perspective matrix
 	float fov = CAMERA_FOV;
@@ -31,21 +38,18 @@ int main()
 
 	Mat4 mvp_mat = perspective_mat * view_mat;
 
-	// create my test triangle
-	Vec4 v1(0.f, 0.f, -50.f, 1.f);
-	Vec4 v2(20.f, 0.f, 0.f, 1.f);
-	Vec4 v3(-20.f, 0.f, 0.f, 1.f);
+	for(int i=0;i<triangle_count;++i)
+	{
+		shape_triangles[i].vertex1 = mvp_mat * shape_triangles[i].vertex1;
+		shape_triangles[i].vertex2 = mvp_mat * shape_triangles[i].vertex2;
+		shape_triangles[i].vertex3 = mvp_mat * shape_triangles[i].vertex3;
 
-	Triangle triangle = {
-		mvp_mat * v1,
-		mvp_mat * v2,
-		mvp_mat * v3,
-		{255, 0, 0}, {255, 0, 255}, {0, 255, 0}
-	};
+		renderTriangle(out_image, shape_triangles[i]);
+	}
 
-	renderTriangle(test_image, triangle);
-
-	exportImage("out/testimg.ppm", test_image);
+	exportImage(IMAGE_OUT_PATH, out_image);
+	deleteImage(out_image);
+	deleteShapes(new_shapes);
 	return 0;
 }
 
@@ -97,9 +101,3 @@ Mat4 calculateViewMatrix(Vec3 _position, Vec3 _lookat, Vec3 _up)
 	
 	return change_in_basis * translation_matrix;
 }
-
-
-
-
-
-
