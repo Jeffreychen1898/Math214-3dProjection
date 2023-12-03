@@ -4,7 +4,7 @@
 #define PI      3.14159265359
 
 #define SHAPE_PATH "in/tower.txt"
-#define IMAGE_OUT_PATH "out/tower2.ppm"
+#define IMAGE_OUT_PATH "out/tower.ppm"
 
 #define IMAGE_WIDTH 800
 #define IMAGE_HEIGHT 600
@@ -18,7 +18,7 @@
 #define FAR_PLANE -100.f
 
 #define CAMERA_POSITION_X -30.f
-#define CAMERA_POSITION_Y 30.f
+#define CAMERA_POSITION_Y -50.f
 #define CAMERA_POSITION_Z -30.f
 
 #define CAMERA_LOOKAT_X 0.f

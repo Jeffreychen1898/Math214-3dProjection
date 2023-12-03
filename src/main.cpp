@@ -75,9 +75,6 @@ Mat4 calculateViewMatrix(Vec3 _position, Vec3 _lookat, Vec3 _up)
 	// do not want to change the forward vector.
 
 	Vec3 forward_vector = _lookat - _position;
-	// this program mimics OpenGL's API and opengl have +z pointing
-	// out of the screen not into the screen, so the left is actually
-	// the right
 	Vec3 right_vector = forward_vector.cross(_up);
 	Vec3 up_vector = right_vector.cross(forward_vector);
 	
